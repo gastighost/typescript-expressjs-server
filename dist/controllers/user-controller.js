@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -16,38 +7,38 @@ exports.login = exports.deleteUser = exports.editUser = exports.getUser = export
 const async_wrapper_1 = __importDefault(require("../utils/async-wrapper"));
 const custom_error_1 = __importDefault(require("../utils/custom-error"));
 const user_services_1 = require("../services/user-services");
-exports.getUsers = (0, async_wrapper_1.default)((_req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield (0, user_services_1.getAllUsers)();
+exports.getUsers = (0, async_wrapper_1.default)(async (_req, res, _next) => {
+    const users = await (0, user_services_1.getAllUsers)();
     res.status(200).json({ message: "Users successfully retrieved!", users });
-}));
-exports.createUser = (0, async_wrapper_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+});
+exports.createUser = (0, async_wrapper_1.default)(async (req, res, next) => {
     const { username, email, password } = req.body;
     if (!username || !email || !password) {
         return next((0, custom_error_1.default)("Please fill in your username, email and password", 400));
     }
-    const newUser = yield (0, user_services_1.createAUser)({ username, email, password });
+    const newUser = await (0, user_services_1.createAUser)({ username, email, password });
     res
         .status(201)
         .json({ message: "User successfully created!", user: newUser });
-}));
-exports.getUser = (0, async_wrapper_1.default)((req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
+});
+exports.getUser = (0, async_wrapper_1.default)(async (req, res, _next) => {
     const { userId } = req.params;
-    const user = yield (0, user_services_1.getAUser)(userId);
+    const user = await (0, user_services_1.getAUser)(userId);
     res.status(200).json({ message: "User successfully retrieved!", user });
-}));
-exports.editUser = (0, async_wrapper_1.default)((req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
+});
+exports.editUser = (0, async_wrapper_1.default)(async (req, res, _next) => {
     const { userId } = req.params;
     const { username, email, password } = req.body;
-    const user = yield (0, user_services_1.editAUser)(userId, { username, email, password });
+    const user = await (0, user_services_1.editAUser)(userId, { username, email, password });
     res.status(200).json({ message: "User successfully updated!", user });
-}));
-exports.deleteUser = (0, async_wrapper_1.default)((req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
+});
+exports.deleteUser = (0, async_wrapper_1.default)(async (req, res, _next) => {
     const { userId } = req.params;
-    const user = yield (0, user_services_1.deleteAUser)(userId);
+    const user = await (0, user_services_1.deleteAUser)(userId);
     res.status(200).json({ message: "User successfully deleted!", user });
-}));
-exports.login = (0, async_wrapper_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+});
+exports.login = (0, async_wrapper_1.default)(async (req, res, next) => {
     const { username, password } = req.body;
-    const token = yield (0, user_services_1.loginUser)({ username, password });
+    const token = await (0, user_services_1.loginUser)({ username, password });
     res.status(200).json({ message: "User successfully logged in!", token });
-}));
+});
