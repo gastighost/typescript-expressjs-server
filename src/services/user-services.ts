@@ -9,7 +9,7 @@ import { hash, compare } from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export const getAllUsers = async (): Promise<IUser[]> => {
-  const users = await User.find({});
+  const users = await User.find({}).select("-password");
 
   return users;
 };

@@ -20,7 +20,7 @@ const custom_error_1 = __importDefault(require("../utils/custom-error"));
 const bcrypt_1 = require("bcrypt");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const getAllUsers = () => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield user_1.default.find({});
+    const users = yield user_1.default.find({}).select("-password");
     return users;
 });
 exports.getAllUsers = getAllUsers;
