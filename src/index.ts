@@ -4,7 +4,7 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 
-import connectDb from "./services/mongodb";
+import connectDb from "./config/mongodb";
 
 import notFound from "./middleware/not-found";
 import errorHandler from "./middleware/error-handler";
