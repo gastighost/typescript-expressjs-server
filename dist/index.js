@@ -17,7 +17,7 @@ dotenv_1.default.config();
 const express_1 = __importDefault(require("express"));
 const helmet_1 = __importDefault(require("helmet"));
 const cors_1 = __importDefault(require("cors"));
-const mongodb_1 = __importDefault(require("./services/mongodb"));
+const mongodb_1 = __importDefault(require("./config/mongodb"));
 const not_found_1 = __importDefault(require("./middleware/not-found"));
 const error_handler_1 = __importDefault(require("./middleware/error-handler"));
 const user_routes_1 = __importDefault(require("./routes/user-routes"));

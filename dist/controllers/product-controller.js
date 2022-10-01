@@ -14,10 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProduct = exports.editProduct = exports.getProduct = exports.createProduct = exports.getProducts = void 0;
 const async_wrapper_1 = __importDefault(require("../utils/async-wrapper"));
-const custom_error_1 = __importDefault(require("../utils/custom-error"));
-const product_1 = __importDefault(require("../models/product"));
+const product_services_1 = require("../services/product-services");
 exports.getProducts = (0, async_wrapper_1.default)((_req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
-    const products = yield product_1.default.find({});
+    const products = yield (0, product_services_1.getAllProducts)();
     res
         .status(200)
         .json({ message: "Products successfully retrieved!", products });
@@ -25,14 +24,14 @@ exports.getProducts = (0, async_wrapper_1.default)((_req, res, _next) => __await
 exports.createProduct = (0, async_wrapper_1.default)((req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const { name, price, quantity, available } = req.body;
-    const newProduct = new product_1.default({
+    const userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId;
+    const newProduct = yield (0, product_services_1.createNewProduct)({
         name,
-        price: Number(price) || undefined,
-        quantity: Number(quantity) || undefined,
-        userId: (_a = req.user) === null || _a === void 0 ? void 0 : _a.userId,
-        available: available,
+        price,
+        quantity,
+        available,
+        userId,
     });
-    yield newProduct.save();
     res.status(201).json({
         message: "Product successfully created!",
         product: newProduct,
@@ -40,7 +39,7 @@ exports.createProduct = (0, async_wrapper_1.default)((req, res, _next) => __awai
 }));
 exports.getProduct = (0, async_wrapper_1.default)((req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
     const { productId } = req.params;
-    const product = yield product_1.default.findById(productId);
+    const product = yield (0, product_services_1.getAProduct)(productId);
     res.status(200).json({
         message: "Product successfully retrieved!",
         product,
@@ -50,15 +49,14 @@ exports.editProduct = (0, async_wrapper_1.default)((req, res, next) => __awaiter
     var _b;
     const { productId } = req.params;
     const { name, price, quantity, available } = req.body;
-    const product = yield product_1.default.findOneAndUpdate({ _id: productId, userId: (_b = req.user) === null || _b === void 0 ? void 0 : _b.userId }, {
+    const userId = (_b = req.user) === null || _b === void 0 ? void 0 : _b.userId;
+    const product = yield (0, product_services_1.editAProduct)(productId, {
         name,
-        price: Number(price) || undefined,
-        quantity: Number(quantity) || undefined,
-        available: available,
-    }, { new: true });
-    if (!product) {
-        return next((0, custom_error_1.default)("You cannot edit this product", 403));
-    }
+        price,
+        quantity,
+        available,
+        userId,
+    });
     res.status(200).json({
         message: "Product successfully updated!",
         product,
@@ -67,13 +65,8 @@ exports.editProduct = (0, async_wrapper_1.default)((req, res, next) => __awaiter
 exports.deleteProduct = (0, async_wrapper_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     var _c;
     const { productId } = req.params;
-    const product = yield product_1.default.findOneAndDelete({
-        _id: productId,
-        userId: (_c = req.user) === null || _c === void 0 ? void 0 : _c.userId,
-    });
-    if (!product) {
-        return next((0, custom_error_1.default)("You cannot delete this product", 403));
-    }
+    const userId = (_c = req.user) === null || _c === void 0 ? void 0 : _c.userId;
+    const product = yield (0, product_services_1.deleteAProduct)(productId, userId);
     res.status(200).json({
         message: "Product successfully deleted!",
         product,
