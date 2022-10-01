@@ -21,11 +21,11 @@ exports.getUsers = (0, async_wrapper_1.default)((_req, res, _next) => __awaiter(
     res.status(200).json({ message: "Users successfully retrieved!", users });
 }));
 exports.createUser = (0, async_wrapper_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, email } = req.body;
-    if (!username || !email) {
-        return next((0, custom_error_1.default)("Please fill in both username and password", 400));
+    const { username, email, password } = req.body;
+    if (!username || !email || !password) {
+        return next((0, custom_error_1.default)("Please fill in your username, email and password", 400));
     }
-    const newUser = yield (0, user_services_1.createAUser)({ username, email });
+    const newUser = yield (0, user_services_1.createAUser)({ username, email, password });
     res
         .status(201)
         .json({ message: "User successfully created!", user: newUser });
@@ -37,8 +37,8 @@ exports.getUser = (0, async_wrapper_1.default)((req, res, _next) => __awaiter(vo
 }));
 exports.editUser = (0, async_wrapper_1.default)((req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
-    const { username, email } = req.body;
-    const user = yield (0, user_services_1.editAUser)(userId, { username, email });
+    const { username, email, password } = req.body;
+    const user = yield (0, user_services_1.editAUser)(userId, { username, email, password });
     res.status(200).json({ message: "User successfully updated!", user });
 }));
 exports.deleteUser = (0, async_wrapper_1.default)((req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -47,7 +47,7 @@ exports.deleteUser = (0, async_wrapper_1.default)((req, res, _next) => __awaiter
     res.status(200).json({ message: "User successfully deleted!", user });
 }));
 exports.login = (0, async_wrapper_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, email } = req.body;
-    const token = yield (0, user_services_1.loginUser)({ username, email });
+    const { username, password } = req.body;
+    const token = yield (0, user_services_1.loginUser)({ username, password });
     res.status(200).json({ message: "User successfully logged in!", token });
 }));

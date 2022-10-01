@@ -28,7 +28,7 @@ export const createAUser = async (user: IUser): Promise<IUser> => {
 export const getAUser = async (
   userId: string
 ): Promise<IUser | CustomErrorType> => {
-  const user = await User.findById(userId);
+  const user = await User.findById(userId).select("-password");
 
   if (!user) {
     throw createError("No user with this id was found", 400);
