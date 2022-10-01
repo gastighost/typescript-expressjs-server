@@ -23,15 +23,15 @@ export const getUsers = asyncWrapper(
 
 export const createUser = asyncWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { username, email } = req.body;
+    const { username, email, password } = req.body;
 
-    if (!username || !email) {
+    if (!username || !email || !password) {
       return next(
-        createError("Please fill in both username and password", 400)
+        createError("Please fill in your username, email and password", 400)
       );
     }
 
-    const newUser = await createAUser({ username, email });
+    const newUser = await createAUser({ username, email, password });
 
     res
       .status(201)
@@ -52,9 +52,9 @@ export const getUser = asyncWrapper(
 export const editUser = asyncWrapper(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.params;
-    const { username, email } = req.body;
+    const { username, email, password } = req.body;
 
-    const user = await editAUser(userId, { username, email });
+    const user = await editAUser(userId, { username, email, password });
 
     res.status(200).json({ message: "User successfully updated!", user });
   }
@@ -72,9 +72,9 @@ export const deleteUser = asyncWrapper(
 
 export const login = asyncWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { username, email } = req.body;
+    const { username, password } = req.body;
 
-    const token = await loginUser({ username, email });
+    const token = await loginUser({ username, password });
 
     res.status(200).json({ message: "User successfully logged in!", token });
   }

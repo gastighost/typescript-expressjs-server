@@ -4,6 +4,8 @@ dotenv.config();
 import User from "../models/user";
 import { IUser } from "../models/user";
 import createError, { CustomErrorType } from "../utils/custom-error";
+
+import { hash, compare } from "bcrypt";
 import jwt from "jsonwebtoken";
 
 export const getAllUsers = async (): Promise<IUser[]> => {
@@ -13,9 +15,11 @@ export const getAllUsers = async (): Promise<IUser[]> => {
 };
 
 export const createAUser = async (user: IUser): Promise<IUser> => {
-  const { username, email } = user;
+  const { username, email, password } = user;
 
-  const newUser = new User({ username, email });
+  const hashedPassword = await hash(password as string, 12);
+
+  const newUser = new User({ username, email, password: hashedPassword });
   await newUser.save();
 
   return newUser;
@@ -37,11 +41,17 @@ export const editAUser = async (
   userId: string,
   user: IUser
 ): Promise<IUser | null | CustomErrorType> => {
-  const { username, email } = user;
+  const { username, email, password } = user;
+
+  let hashedPassword = undefined;
+
+  if (password) {
+    hashedPassword = await hash(password as string, 12);
+  }
 
   const updatedUser = await User.findByIdAndUpdate(
     userId,
-    { username, email },
+    { username, email, password: hashedPassword },
     { new: true }
   );
 
@@ -65,12 +75,21 @@ export const deleteAUser = async (
 };
 
 export const loginUser = async (user: IUser) => {
-  const { username, email } = user;
+  const { username, password } = user;
 
-  const loggedInUser = await User.findOne({ username, email });
+  const loggedInUser = await User.findOne({ username });
 
   if (!loggedInUser) {
-    throw createError("Username or email was wrong", 401);
+    throw createError("Username or password was wrong", 401);
+  }
+
+  const match = await compare(
+    password as string,
+    loggedInUser.password as string
+  );
+
+  if (!match) {
+    throw createError("Username or password was wrong", 401);
   }
 
   const token = jwt.sign(
