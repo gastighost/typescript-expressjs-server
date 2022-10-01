@@ -13,9 +13,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.login = exports.deleteUser = exports.editUser = exports.getUser = exports.createUser = exports.getUsers = void 0;
-/* eslint-disable @typescript-eslint/no-unused-vars */
-const dotenv_1 = __importDefault(require("dotenv"));
-dotenv_1.default.config();
 const async_wrapper_1 = __importDefault(require("../utils/async-wrapper"));
 const custom_error_1 = __importDefault(require("../utils/custom-error"));
 const user_services_1 = require("../services/user-services");

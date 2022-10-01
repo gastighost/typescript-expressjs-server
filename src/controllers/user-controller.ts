@@ -1,14 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import dotenv from "dotenv";
-dotenv.config();
-
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
 
 import asyncWrapper from "../utils/async-wrapper";
 import createError from "../utils/custom-error";
 
-import User from "../models/user";
 import {
   createAUser,
   deleteAUser,
