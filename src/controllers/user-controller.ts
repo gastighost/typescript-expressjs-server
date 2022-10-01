@@ -9,10 +9,18 @@ import asyncWrapper from "../utils/async-wrapper";
 import createError from "../utils/custom-error";
 
 import User from "../models/user";
+import {
+  createAUser,
+  deleteAUser,
+  editAUser,
+  getAllUsers,
+  getAUser,
+  loginUser,
+} from "../services/user-services";
 
 export const getUsers = asyncWrapper(
   async (_req: Request, res: Response, _next: NextFunction) => {
-    const users = await User.find({});
+    const users = await getAllUsers();
 
     res.status(200).json({ message: "Users successfully retrieved!", users });
   }
@@ -28,8 +36,7 @@ export const createUser = asyncWrapper(
       );
     }
 
-    const newUser = new User({ username, email });
-    await newUser.save();
+    const newUser = await createAUser({ username, email });
 
     res
       .status(201)
@@ -41,7 +48,7 @@ export const getUser = asyncWrapper(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.params;
 
-    const user = await User.findById(userId);
+    const user = await getAUser(userId);
 
     res.status(200).json({ message: "User successfully retrieved!", user });
   }
@@ -52,11 +59,7 @@ export const editUser = asyncWrapper(
     const { userId } = req.params;
     const { username, email } = req.body;
 
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { username, email },
-      { new: true }
-    );
+    const user = await editAUser(userId, { username, email });
 
     res.status(200).json({ message: "User successfully updated!", user });
   }
@@ -66,7 +69,7 @@ export const deleteUser = asyncWrapper(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.params;
 
-    const user = await User.findByIdAndDelete(userId);
+    const user = await deleteAUser(userId);
 
     res.status(200).json({ message: "User successfully deleted!", user });
   }
@@ -76,19 +79,7 @@ export const login = asyncWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
     const { username, email } = req.body;
 
-    const user = await User.findOne({ username, email });
-
-    if (!user) {
-      return next(createError("Username or email was wrong", 401));
-    }
-
-    const token = jwt.sign(
-      {
-        data: { userId: user._id, username: user.username, email: user.email },
-      },
-      process.env.JWT_SECRET as string,
-      { expiresIn: "1h" }
-    );
+    const token = await loginUser({ username, email });
 
     res.status(200).json({ message: "User successfully logged in!", token });
   }

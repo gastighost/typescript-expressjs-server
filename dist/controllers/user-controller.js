@@ -16,12 +16,11 @@ exports.login = exports.deleteUser = exports.editUser = exports.getUser = export
 /* eslint-disable @typescript-eslint/no-unused-vars */
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const async_wrapper_1 = __importDefault(require("../utils/async-wrapper"));
 const custom_error_1 = __importDefault(require("../utils/custom-error"));
-const user_1 = __importDefault(require("../models/user"));
+const user_services_1 = require("../services/user-services");
 exports.getUsers = (0, async_wrapper_1.default)((_req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
-    const users = yield user_1.default.find({});
+    const users = yield (0, user_services_1.getAllUsers)();
     res.status(200).json({ message: "Users successfully retrieved!", users });
 }));
 exports.createUser = (0, async_wrapper_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -29,36 +28,29 @@ exports.createUser = (0, async_wrapper_1.default)((req, res, next) => __awaiter(
     if (!username || !email) {
         return next((0, custom_error_1.default)("Please fill in both username and password", 400));
     }
-    const newUser = new user_1.default({ username, email });
-    yield newUser.save();
+    const newUser = yield (0, user_services_1.createAUser)({ username, email });
     res
         .status(201)
         .json({ message: "User successfully created!", user: newUser });
 }));
 exports.getUser = (0, async_wrapper_1.default)((req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
-    const user = yield user_1.default.findById(userId);
+    const user = yield (0, user_services_1.getAUser)(userId);
     res.status(200).json({ message: "User successfully retrieved!", user });
 }));
 exports.editUser = (0, async_wrapper_1.default)((req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
     const { username, email } = req.body;
-    const user = yield user_1.default.findByIdAndUpdate(userId, { username, email }, { new: true });
+    const user = yield (0, user_services_1.editAUser)(userId, { username, email });
     res.status(200).json({ message: "User successfully updated!", user });
 }));
 exports.deleteUser = (0, async_wrapper_1.default)((req, res, _next) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = req.params;
-    const user = yield user_1.default.findByIdAndDelete(userId);
+    const user = yield (0, user_services_1.deleteAUser)(userId);
     res.status(200).json({ message: "User successfully deleted!", user });
 }));
 exports.login = (0, async_wrapper_1.default)((req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, email } = req.body;
-    const user = yield user_1.default.findOne({ username, email });
-    if (!user) {
-        return next((0, custom_error_1.default)("Username or email was wrong", 401));
-    }
-    const token = jsonwebtoken_1.default.sign({
-        data: { userId: user._id, username: user.username, email: user.email },
-    }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = yield (0, user_services_1.loginUser)({ username, email });
     res.status(200).json({ message: "User successfully logged in!", token });
 }));
