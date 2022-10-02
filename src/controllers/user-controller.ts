@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from "express";
+import { RequestAuthType } from "../middleware/auth";
 
 import asyncWrapper from "../utils/async-wrapper";
 import createError from "../utils/custom-error";
@@ -77,5 +78,13 @@ export const login = asyncWrapper(
     const token = await loginUser({ username, password });
 
     res.status(200).json({ message: "User successfully logged in!", token });
+  }
+);
+
+export const checkAuth = asyncWrapper(
+  async (req: RequestAuthType, res: Response, next: NextFunction) => {
+    const { user } = req;
+
+    res.status(200).json({ message: "You are currently logged in!", user });
   }
 );

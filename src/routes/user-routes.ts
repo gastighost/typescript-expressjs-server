@@ -1,6 +1,8 @@
 import express from "express";
 const router = express.Router();
 
+import auth from "../middleware/auth";
+
 import {
   getUsers,
   createUser,
@@ -8,6 +10,7 @@ import {
   editUser,
   deleteUser,
   login,
+  checkAuth,
 } from "../controllers/user-controller";
 
 router.get("/", getUsers);
@@ -21,5 +24,7 @@ router.patch("/:userId", editUser);
 router.delete("/:userId", deleteUser);
 
 router.post("/login", login);
+
+router.get("/login/check-auth", auth, checkAuth);
 
 export default router;
