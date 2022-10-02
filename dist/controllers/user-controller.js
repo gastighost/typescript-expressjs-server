@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.deleteUser = exports.editUser = exports.getUser = exports.createUser = exports.getUsers = void 0;
+exports.checkAuth = exports.login = exports.deleteUser = exports.editUser = exports.getUser = exports.createUser = exports.getUsers = void 0;
 const async_wrapper_1 = __importDefault(require("../utils/async-wrapper"));
 const custom_error_1 = __importDefault(require("../utils/custom-error"));
 const user_services_1 = require("../services/user-services");
@@ -41,4 +41,8 @@ exports.login = (0, async_wrapper_1.default)(async (req, res, next) => {
     const { username, password } = req.body;
     const token = await (0, user_services_1.loginUser)({ username, password });
     res.status(200).json({ message: "User successfully logged in!", token });
+});
+exports.checkAuth = (0, async_wrapper_1.default)(async (req, res, next) => {
+    const { user } = req;
+    res.status(200).json({ message: "You are currently logged in!", user });
 });
