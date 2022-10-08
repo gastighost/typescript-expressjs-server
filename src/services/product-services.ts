@@ -11,7 +11,7 @@ export const getAllProducts = async () => {
 export const createNewProduct = async (
   product: IProduct
 ): Promise<IProduct> => {
-  const { name, price, quantity, userId, available } = product;
+  const { name, price, quantity, userId, available, date } = product;
 
   const newProduct = new Product({
     name,
@@ -19,6 +19,7 @@ export const createNewProduct = async (
     quantity: Number(quantity) || undefined,
     userId: userId,
     available: available,
+    date,
   });
   await newProduct.save();
 
@@ -41,7 +42,7 @@ export const editAProduct = async (
   productId: string,
   product: IProduct
 ): Promise<IProduct> => {
-  const { name, price, quantity, available, userId } = product;
+  const { name, price, quantity, available, userId, date } = product;
 
   const editedProduct = await Product.findOneAndUpdate(
     { _id: productId, userId: userId },
@@ -50,6 +51,7 @@ export const editAProduct = async (
       price: Number(price) || undefined,
       quantity: Number(quantity) || undefined,
       available: available,
+      date,
     },
     { new: true }
   );

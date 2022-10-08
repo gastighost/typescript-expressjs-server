@@ -6,6 +6,7 @@ export interface IProduct {
   quantity: number;
   userId: Types.ObjectId | string;
   available: boolean;
+  date: string;
 }
 
 const productSchema = new Schema<IProduct>({
@@ -29,6 +30,9 @@ const productSchema = new Schema<IProduct>({
   available: {
     type: Boolean,
     default: true,
+  },
+  date: {
+    type: String,
   },
 });
 

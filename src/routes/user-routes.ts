@@ -20,13 +20,13 @@ router.post(
   "/",
   [
     check("username")
-      .exists({ checkFalsy: true })
       .trim()
+      .exists({ checkFalsy: true })
       .withMessage("Please input a username"),
     check("email").trim().isEmail(),
     check("password")
-      .exists({ checkFalsy: true })
       .trim()
+      .exists({ checkFalsy: true })
       .withMessage("Please input a password"),
   ],
   createUser

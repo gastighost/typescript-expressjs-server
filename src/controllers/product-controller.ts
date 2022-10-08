@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Response, NextFunction } from "express";
+import { validationResult } from "express-validator";
 import { RequestAuthType } from "../middleware/auth";
 
 import asyncWrapper from "../utils/async-wrapper";
+import createError, { createValidationError } from "../utils/custom-error";
 
 import {
   createNewProduct,
@@ -23,8 +25,15 @@ export const getProducts = asyncWrapper(
 );
 
 export const createProduct = asyncWrapper(
-  async (req: RequestAuthType, res: Response, _next: NextFunction) => {
-    const { name, price, quantity, available } = req.body;
+  async (req: RequestAuthType, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const validationError = createValidationError(errors.array());
+      return next(createError(validationError, 400));
+    }
+
+    const { name, price, quantity, available, date } = req.body;
 
     const userId = req.user?.userId as string;
 
@@ -34,6 +43,7 @@ export const createProduct = asyncWrapper(
       quantity,
       available,
       userId,
+      date: date?.toLocaleString("en-US"),
     });
 
     res.status(201).json({
@@ -58,8 +68,15 @@ export const getProduct = asyncWrapper(
 
 export const editProduct = asyncWrapper(
   async (req: RequestAuthType, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const validationError = createValidationError(errors.array());
+      return next(createError(validationError, 400));
+    }
+
     const { productId } = req.params;
-    const { name, price, quantity, available } = req.body;
+    const { name, price, quantity, available, date } = req.body;
     const userId = req.user?.userId as string;
 
     const product = await editAProduct(productId, {
@@ -68,6 +85,7 @@ export const editProduct = asyncWrapper(
       quantity,
       available,
       userId,
+      date: date?.toLocaleString("en-US"),
     });
 
     res.status(200).json({
