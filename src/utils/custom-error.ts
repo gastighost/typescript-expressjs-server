@@ -3,6 +3,13 @@ export interface CustomErrorType {
   statusCode: number;
 }
 
+interface ValidationError {
+  value?: string;
+  msg?: string;
+  param?: string;
+  location?: string;
+}
+
 class CustomError extends Error {
   statusCode: number;
 
@@ -15,6 +22,16 @@ class CustomError extends Error {
 const createError = (message: string, statusCode: number): CustomErrorType => {
   const error = new CustomError(message, statusCode);
   return error;
+};
+
+export const createValidationError = (errorArr: ValidationError[]): string => {
+  const newErrorArr: string[] = errorArr.map(
+    (error: ValidationError): string => {
+      return `${error.param}: ${error.msg}`;
+    }
+  );
+
+  return newErrorArr.join(", ");
 };
 
 export default createError;

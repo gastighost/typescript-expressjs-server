@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Request, Response, NextFunction } from "express";
+import { validationResult } from "express-validator";
 import { RequestAuthType } from "../middleware/auth";
 
 import asyncWrapper from "../utils/async-wrapper";
-import createError from "../utils/custom-error";
+import createError, { createValidationError } from "../utils/custom-error";
 
 import {
   createAUser,
@@ -24,13 +25,14 @@ export const getUsers = asyncWrapper(
 
 export const createUser = asyncWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
-    const { username, email, password } = req.body;
+    const errors = validationResult(req);
 
-    if (!username || !email || !password) {
-      return next(
-        createError("Please fill in your username, email and password", 400)
-      );
+    if (!errors.isEmpty()) {
+      const validationError = createValidationError(errors.array());
+      return next(createError(validationError, 400));
     }
+
+    const { username, email, password } = req.body;
 
     const newUser = await createAUser({ username, email, password });
 

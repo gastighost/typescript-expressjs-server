@@ -1,4 +1,5 @@
 import express from "express";
+import { check } from "express-validator";
 const router = express.Router();
 
 import auth from "../middleware/auth";
@@ -15,7 +16,21 @@ import {
 
 router.get("/", getUsers);
 
-router.post("/", createUser);
+router.post(
+  "/",
+  [
+    check("username")
+      .exists({ checkFalsy: true })
+      .trim()
+      .withMessage("Please input a username"),
+    check("email").trim().isEmail(),
+    check("password")
+      .exists({ checkFalsy: true })
+      .trim()
+      .withMessage("Please input a password"),
+  ],
+  createUser
+);
 
 router.get("/:userId", getUser);
 
