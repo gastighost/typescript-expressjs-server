@@ -23,5 +23,8 @@ const productSchema = new mongoose_1.Schema({
         type: Boolean,
         default: true,
     },
+    date: {
+        type: String,
+    },
 });
 exports.default = (0, mongoose_1.model)("Product", productSchema);

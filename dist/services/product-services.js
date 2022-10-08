@@ -12,13 +12,14 @@ const getAllProducts = async () => {
 };
 exports.getAllProducts = getAllProducts;
 const createNewProduct = async (product) => {
-    const { name, price, quantity, userId, available } = product;
+    const { name, price, quantity, userId, available, date } = product;
     const newProduct = new product_1.default({
         name,
         price: Number(price) || undefined,
         quantity: Number(quantity) || undefined,
         userId: userId,
         available: available,
+        date,
     });
     await newProduct.save();
     return newProduct;
@@ -33,12 +34,13 @@ const getAProduct = async (productId) => {
 };
 exports.getAProduct = getAProduct;
 const editAProduct = async (productId, product) => {
-    const { name, price, quantity, available, userId } = product;
+    const { name, price, quantity, available, userId, date } = product;
     const editedProduct = await product_1.default.findOneAndUpdate({ _id: productId, userId: userId }, {
         name,
         price: Number(price) || undefined,
         quantity: Number(quantity) || undefined,
         available: available,
+        date,
     }, { new: true });
     if (!editedProduct) {
         throw (0, custom_error_1.default)("You cannot edit this product", 403);

@@ -4,11 +4,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const express_validator_1 = require("express-validator");
 const router = express_1.default.Router();
 const auth_1 = __importDefault(require("../middleware/auth"));
 const user_controller_1 = require("../controllers/user-controller");
 router.get("/", user_controller_1.getUsers);
-router.post("/", user_controller_1.createUser);
+router.post("/", [
+    (0, express_validator_1.check)("username")
+        .trim()
+        .exists({ checkFalsy: true })
+        .withMessage("Please input a username"),
+    (0, express_validator_1.check)("email").trim().isEmail(),
+    (0, express_validator_1.check)("password")
+        .trim()
+        .exists({ checkFalsy: true })
+        .withMessage("Please input a password"),
+], user_controller_1.createUser);
 router.get("/:userId", user_controller_1.getUser);
 router.patch("/:userId", user_controller_1.editUser);
 router.delete("/:userId", user_controller_1.deleteUser);
