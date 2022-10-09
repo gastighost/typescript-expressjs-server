@@ -27,6 +27,8 @@ router.post("/", [
     (0, express_validator_1.check)("date")
         .toDate()
         .isISO8601()
+        .bail()
+        .customSanitizer((date) => date.toLocaleString("en-US"))
         .withMessage("Date should be a valid format"),
 ], product_controller_1.createProduct);
 router.get("/:productId", product_controller_1.getProduct);
@@ -55,6 +57,8 @@ router.patch("/:productId", [
         .optional()
         .toDate()
         .isISO8601()
+        .bail()
+        .customSanitizer((date) => date.toLocaleString("en-US"))
         .withMessage("Date should be a valid format"),
 ], product_controller_1.editProduct);
 router.delete("/:productId", product_controller_1.deleteProduct);

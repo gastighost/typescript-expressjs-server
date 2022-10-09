@@ -51,7 +51,7 @@ exports.createProduct = (0, async_wrapper_1.default)(async (req, res, next) => {
         quantity,
         available,
         userId,
-        date: date?.toLocaleString("en-US"),
+        date,
     });
     res.status(201).json({
         message: "Product successfully created!",
@@ -81,7 +81,7 @@ exports.editProduct = (0, async_wrapper_1.default)(async (req, res, next) => {
         quantity,
         available,
         userId,
-        date: date?.toLocaleString("en-US"),
+        date,
     });
     res.status(200).json({
         message: "Product successfully updated!",
