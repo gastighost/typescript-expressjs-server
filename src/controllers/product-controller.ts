@@ -43,7 +43,7 @@ export const createProduct = asyncWrapper(
       quantity,
       available,
       userId,
-      date: date?.toLocaleString("en-US"),
+      date,
     });
 
     res.status(201).json({
@@ -85,7 +85,7 @@ export const editProduct = asyncWrapper(
       quantity,
       available,
       userId,
-      date: date?.toLocaleString("en-US"),
+      date,
     });
 
     res.status(200).json({

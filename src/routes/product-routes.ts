@@ -34,6 +34,8 @@ router.post(
     check("date")
       .toDate()
       .isISO8601()
+      .bail()
+      .customSanitizer((date: Date) => date.toLocaleString("en-US"))
       .withMessage("Date should be a valid format"),
   ],
   createProduct
@@ -68,6 +70,8 @@ router.patch(
       .optional()
       .toDate()
       .isISO8601()
+      .bail()
+      .customSanitizer((date: Date) => date.toLocaleString("en-US"))
       .withMessage("Date should be a valid format"),
   ],
   editProduct
