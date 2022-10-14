@@ -38,7 +38,20 @@ router.patch("/:userId", editUser);
 
 router.delete("/:userId", deleteUser);
 
-router.post("/login", login);
+router.post(
+  "/login",
+  [
+    check("username")
+      .trim()
+      .exists({ checkFalsy: true })
+      .withMessage("Please input a username"),
+    check("password")
+      .trim()
+      .exists({ checkFalsy: true })
+      .withMessage("Please input a password"),
+  ],
+  login
+);
 
 router.get("/login/check-auth", auth, checkAuth);
 

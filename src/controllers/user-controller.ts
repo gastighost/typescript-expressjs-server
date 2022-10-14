@@ -75,6 +75,13 @@ export const deleteUser = asyncWrapper(
 
 export const login = asyncWrapper(
   async (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const validationError = createValidationError(errors.array());
+      return next(createError(validationError, 400));
+    }
+
     const { username, password } = req.body;
 
     const token = await loginUser({ username, password });
