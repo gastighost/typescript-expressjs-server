@@ -34,7 +34,29 @@ router.post(
 
 router.get("/:userId", getUser);
 
-router.patch("/:userId", editUser);
+router.patch(
+  "/:userId",
+  [
+    check("username")
+      .optional()
+      .trim()
+      .exists({ checkFalsy: true })
+      .withMessage("Please input a username"),
+    check("email")
+      .optional()
+      .trim()
+      .exists({ checkFalsy: true })
+      .bail()
+      .isEmail()
+      .withMessage("Please input a valid email"),
+    check("password")
+      .optional()
+      .trim()
+      .exists({ checkFalsy: true })
+      .withMessage("Please input a password"),
+  ],
+  editUser
+);
 
 router.delete("/:userId", deleteUser);
 

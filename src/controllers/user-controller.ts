@@ -53,7 +53,14 @@ export const getUser = asyncWrapper(
 );
 
 export const editUser = asyncWrapper(
-  async (req: Request, res: Response, _next: NextFunction) => {
+  async (req: Request, res: Response, next: NextFunction) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      const validationError = createValidationError(errors.array());
+      return next(createError(validationError, 400));
+    }
+
     const { userId } = req.params;
     const { username, email, password } = req.body;
 
