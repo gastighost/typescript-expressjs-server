@@ -52,7 +52,12 @@ exports.getUser = (0, async_wrapper_1.default)(async (req, res, _next) => {
     const user = await (0, user_services_1.getAUser)(userId);
     res.status(200).json({ message: "User successfully retrieved!", user });
 });
-exports.editUser = (0, async_wrapper_1.default)(async (req, res, _next) => {
+exports.editUser = (0, async_wrapper_1.default)(async (req, res, next) => {
+    const errors = (0, express_validator_1.validationResult)(req);
+    if (!errors.isEmpty()) {
+        const validationError = (0, custom_error_1.createValidationError)(errors.array());
+        return next((0, custom_error_1.default)(validationError, 400));
+    }
     const { userId } = req.params;
     const { username, email, password } = req.body;
     const user = await (0, user_services_1.editAUser)(userId, { username, email, password });
@@ -64,6 +69,11 @@ exports.deleteUser = (0, async_wrapper_1.default)(async (req, res, _next) => {
     res.status(200).json({ message: "User successfully deleted!", user });
 });
 exports.login = (0, async_wrapper_1.default)(async (req, res, next) => {
+    const errors = (0, express_validator_1.validationResult)(req);
+    if (!errors.isEmpty()) {
+        const validationError = (0, custom_error_1.createValidationError)(errors.array());
+        return next((0, custom_error_1.default)(validationError, 400));
+    }
     const { username, password } = req.body;
     const token = await (0, user_services_1.loginUser)({ username, password });
     res.status(200).json({ message: "User successfully logged in!", token });

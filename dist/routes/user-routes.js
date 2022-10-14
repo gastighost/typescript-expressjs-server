@@ -21,8 +21,35 @@ router.post("/", [
         .withMessage("Please input a password"),
 ], user_controller_1.createUser);
 router.get("/:userId", user_controller_1.getUser);
-router.patch("/:userId", user_controller_1.editUser);
+router.patch("/:userId", [
+    (0, express_validator_1.check)("username")
+        .optional()
+        .trim()
+        .exists({ checkFalsy: true })
+        .withMessage("Please input a username"),
+    (0, express_validator_1.check)("email")
+        .optional()
+        .trim()
+        .exists({ checkFalsy: true })
+        .bail()
+        .isEmail()
+        .withMessage("Please input a valid email"),
+    (0, express_validator_1.check)("password")
+        .optional()
+        .trim()
+        .exists({ checkFalsy: true })
+        .withMessage("Please input a password"),
+], user_controller_1.editUser);
 router.delete("/:userId", user_controller_1.deleteUser);
-router.post("/login", user_controller_1.login);
+router.post("/login", [
+    (0, express_validator_1.check)("username")
+        .trim()
+        .exists({ checkFalsy: true })
+        .withMessage("Please input a username"),
+    (0, express_validator_1.check)("password")
+        .trim()
+        .exists({ checkFalsy: true })
+        .withMessage("Please input a password"),
+], user_controller_1.login);
 router.get("/login/check-auth", auth_1.default, user_controller_1.checkAuth);
 exports.default = router;
