@@ -6,17 +6,11 @@ import { RequestAuthType } from "../middleware/auth";
 import asyncWrapper from "../utils/async-wrapper";
 import createError, { createValidationError } from "../utils/custom-error";
 
-import {
-  createNewProduct,
-  deleteAProduct,
-  editAProduct,
-  getAllProducts,
-  getAProduct,
-} from "../services/product-services";
+import ProductServices from "../services/product-services";
 
 export const getProducts = asyncWrapper(
   async (_req: RequestAuthType, res: Response, _next: NextFunction) => {
-    const products = await getAllProducts();
+    const products = await ProductServices.getAllProducts();
 
     res
       .status(200)
@@ -37,7 +31,7 @@ export const createProduct = asyncWrapper(
 
     const userId = req.user?.userId as string;
 
-    const newProduct = await createNewProduct({
+    const newProduct = await ProductServices.createNewProduct({
       name,
       price,
       quantity,
@@ -57,7 +51,7 @@ export const getProduct = asyncWrapper(
   async (req: RequestAuthType, res: Response, _next: NextFunction) => {
     const { productId } = req.params;
 
-    const product = await getAProduct(productId);
+    const product = await ProductServices.getAProduct(productId);
 
     res.status(200).json({
       message: "Product successfully retrieved!",
@@ -79,7 +73,7 @@ export const editProduct = asyncWrapper(
     const { name, price, quantity, available, date } = req.body;
     const userId = req.user?.userId as string;
 
-    const product = await editAProduct(productId, {
+    const product = await ProductServices.editAProduct(productId, {
       name,
       price,
       quantity,
@@ -100,7 +94,7 @@ export const deleteProduct = asyncWrapper(
     const { productId } = req.params;
     const userId = req.user?.userId as string;
 
-    const product = await deleteAProduct(productId, userId);
+    const product = await ProductServices.deleteAProduct(productId, userId);
 
     res.status(200).json({
       message: "Product successfully deleted!",

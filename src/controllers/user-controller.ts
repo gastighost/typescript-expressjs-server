@@ -6,18 +6,11 @@ import { RequestAuthType } from "../middleware/auth";
 import asyncWrapper from "../utils/async-wrapper";
 import createError, { createValidationError } from "../utils/custom-error";
 
-import {
-  createAUser,
-  deleteAUser,
-  editAUser,
-  getAllUsers,
-  getAUser,
-  loginUser,
-} from "../services/user-services";
+import UserServices from "../services/user-services";
 
 export const getUsers = asyncWrapper(
   async (_req: Request, res: Response, _next: NextFunction) => {
-    const users = await getAllUsers();
+    const users = await UserServices.getAllUsers();
 
     res.status(200).json({ message: "Users successfully retrieved!", users });
   }
@@ -34,7 +27,11 @@ export const createUser = asyncWrapper(
 
     const { username, email, password } = req.body;
 
-    const newUser = await createAUser({ username, email, password });
+    const newUser = await UserServices.createAUser({
+      username,
+      email,
+      password,
+    });
 
     res
       .status(201)
@@ -46,7 +43,7 @@ export const getUser = asyncWrapper(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.params;
 
-    const user = await getAUser(userId);
+    const user = await UserServices.getAUser(userId);
 
     res.status(200).json({ message: "User successfully retrieved!", user });
   }
@@ -64,7 +61,11 @@ export const editUser = asyncWrapper(
     const { userId } = req.params;
     const { username, email, password } = req.body;
 
-    const user = await editAUser(userId, { username, email, password });
+    const user = await UserServices.editAUser(userId, {
+      username,
+      email,
+      password,
+    });
 
     res.status(200).json({ message: "User successfully updated!", user });
   }
@@ -74,7 +75,7 @@ export const deleteUser = asyncWrapper(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.params;
 
-    const user = await deleteAUser(userId);
+    const user = await UserServices.deleteAUser(userId);
 
     res.status(200).json({ message: "User successfully deleted!", user });
   }
@@ -91,7 +92,7 @@ export const login = asyncWrapper(
 
     const { username, password } = req.body;
 
-    const token = await loginUser({ username, password });
+    const token = await UserServices.loginUser({ username, password });
 
     res.status(200).json({ message: "User successfully logged in!", token });
   }
