@@ -30,9 +30,9 @@ exports.deleteProduct = exports.editProduct = exports.getProduct = exports.creat
 const express_validator_1 = require("express-validator");
 const async_wrapper_1 = __importDefault(require("../utils/async-wrapper"));
 const custom_error_1 = __importStar(require("../utils/custom-error"));
-const product_services_1 = require("../services/product-services");
+const product_services_1 = __importDefault(require("../services/product-services"));
 exports.getProducts = (0, async_wrapper_1.default)(async (_req, res, _next) => {
-    const products = await (0, product_services_1.getAllProducts)();
+    const products = await product_services_1.default.getAllProducts();
     res
         .status(200)
         .json({ message: "Products successfully retrieved!", products });
@@ -45,7 +45,7 @@ exports.createProduct = (0, async_wrapper_1.default)(async (req, res, next) => {
     }
     const { name, price, quantity, available, date } = req.body;
     const userId = req.user?.userId;
-    const newProduct = await (0, product_services_1.createNewProduct)({
+    const newProduct = await product_services_1.default.createNewProduct({
         name,
         price,
         quantity,
@@ -60,7 +60,7 @@ exports.createProduct = (0, async_wrapper_1.default)(async (req, res, next) => {
 });
 exports.getProduct = (0, async_wrapper_1.default)(async (req, res, _next) => {
     const { productId } = req.params;
-    const product = await (0, product_services_1.getAProduct)(productId);
+    const product = await product_services_1.default.getAProduct(productId);
     res.status(200).json({
         message: "Product successfully retrieved!",
         product,
@@ -75,7 +75,7 @@ exports.editProduct = (0, async_wrapper_1.default)(async (req, res, next) => {
     const { productId } = req.params;
     const { name, price, quantity, available, date } = req.body;
     const userId = req.user?.userId;
-    const product = await (0, product_services_1.editAProduct)(productId, {
+    const product = await product_services_1.default.editAProduct(productId, {
         name,
         price,
         quantity,
@@ -91,7 +91,7 @@ exports.editProduct = (0, async_wrapper_1.default)(async (req, res, next) => {
 exports.deleteProduct = (0, async_wrapper_1.default)(async (req, res, next) => {
     const { productId } = req.params;
     const userId = req.user?.userId;
-    const product = await (0, product_services_1.deleteAProduct)(productId, userId);
+    const product = await product_services_1.default.deleteAProduct(productId, userId);
     res.status(200).json({
         message: "Product successfully deleted!",
         product,
